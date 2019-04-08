@@ -11,7 +11,7 @@
                         <span>单位名称:</span>{{useUnit.entname}}
                     </td>
                     <td width="50%">
-                        <span>统一社会信用代码:</span>{{useUnit.uniscid}}
+                        <span>统一社会信用代码:</span>{{useUnit.uniSocCode}}
                     </td>
                 </tr>
                 <tr>
@@ -78,7 +78,7 @@
             return {
                 useUnit: {
                     entname: '',//企业名称
-                    uniscid: '',//统一社会信用代码
+                    uniSocCode: '',//统一社会信用代码
                     lgname: '',//法定代表人
                     opscope: '',//经营范围
                     estdate: '',//成立日期

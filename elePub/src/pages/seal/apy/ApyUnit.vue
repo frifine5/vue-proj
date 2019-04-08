@@ -15,7 +15,7 @@
                     *统一社会信用代码
                 </td>
                 <td width="30%">
-                    <MyInput :inputValue="useUnit.uniscid" placeholder="请输入统一社会信用代码"
+                    <MyInput :inputValue="useUnit.uniSocCode" placeholder="请输入统一社会信用代码"
                              @change=" (e,value) => {useUnit.uniscid=value}"></MyInput>
                 </td>
             </tr>
@@ -109,7 +109,7 @@
             return {
                 useUnit: {
                     entname: '',//企业名称
-                    uniscid: '',//统一社会信用代码
+                    uniSocCode: '',//统一社会信用代码
                     lgname: '',//法定代表人
                     opscope: '',//经营范围
                     estdate: '',//成立日期
@@ -159,7 +159,7 @@
             reset() {
                 this.useUnit = {
                     entname: '',//企业名称
-                    uniscid: '',//统一社会信用代码
+                    uniSocCode: '',//统一社会信用代码
                     lgname: '',//法定代表人
                     opscope: '',//经营范围
                     estdate: '',//成立日期

@@ -34,7 +34,7 @@
             return {
                 useUnit: {
                     entname: '',//企业名称
-                    uniscid: '',//统一社会信用代码
+                    uniSocCode: '',//统一社会信用代码
                     lgname: '',//法定代表人
                     opscope: '',//经营范围
                     estdate: '',//成立日期
