@@ -22,7 +22,8 @@ export default {
         }
     },
     ca:{
-        apy: '/app/reqCertByBpk',// 申请信息上传
+        apy: '/app/certApply',          // 申请信息上传记录到库
+        imdSCert: '/app/reqCertByBpk',  // 申请信息上传并立即获得单证书
     },
     pwd: {
         sendEmail: '/manage/user/sendEmail',

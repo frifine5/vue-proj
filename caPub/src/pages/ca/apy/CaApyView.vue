@@ -5,20 +5,26 @@
             <table class="set-table1">
                 <tr>
                     <td width="30%">
+                        <small>证书名称:</small>
+                        <span v-if="caReq.certName" >{{caReq.certName}}</span>
+                        <span v-else>{{caReq.uniSocCode}}{{caReq.entName}}</span>
+                    </td>
+                    <td width="30%">
                         <small>单位/机构名称:</small>{{caReq.entName}}
                     </td>
                     <td width="30%">
                         <small>统一社会信用代码:</small>{{caReq.uniSocCode}}
                     </td>
+
+                </tr>
+                <tr>
+                    <td width="30%">
+                        <small>省市县:</small>&nbsp;&nbsp;&nbsp;&nbsp;{{caReq.province}}-{{caReq.city}}-{{caReq.county}}
+                    </td>
                     <td width="30%">
                         <small>有效期:</small>
                         <span v-if="caReq.validEnd" >至{{caReq.validEnd}}</span>
                         <span v-else>{{caReq.validAge}}年</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60%" colspan="2">
-                        <small>省市县:</small>&nbsp;&nbsp;&nbsp;&nbsp;{{caReq.province}}-{{caReq.city}}-{{caReq.county}}
                     </td>
                     <td width="30%">
                         <small>联系电话:</small>{{caReq.telephone}}
@@ -37,8 +43,8 @@
                     <td colspan="2">
                         <div class="uploadBox2">
                             <MyButton type="second" class="btn-file2">选择文件
-                                <input type='file'  class="upfile" @change="fileChange"></MyButton>
-                            <a v-if="files">{{files.name}}</a>
+                                <input type='file' id="pkFile"  class="upfile" @change="fileChange"></MyButton>
+                            <a class="fileName" v-if="files">{{files.name}}</a>
                         </div>
                         <br/>
                     </td>
@@ -64,6 +70,7 @@
                 caReq: {
                     entName: '',        // 企业/机构名称
                     uniSocCode: '',        // 统一社会信用代码
+                    certName: '',       // 证书名称
                     province: '',       // 省
                     city: '',           // 市
                     county: '',         // 县
@@ -71,8 +78,6 @@
                     telephone: '',      // 联系电话
                     validEnd: '',       // 有效期止
                     validAge: '',       // 有效期（年）
-                    pkFile: '',         // 公钥文件
-                    p10File: '',        // 公钥p10文件
                 },
                 fileType: 0,            //0 - .dat = pk | 1 - .csr/.p10 = p10
                 files: {}               // pk | p10
@@ -82,7 +87,6 @@
         methods: {
             b2pres() {
                 // add logic
-
                 // chg step
                 this.$root.bus.$emit('chgStep', 0)
                 // router push
@@ -96,6 +100,7 @@
             },
             commitRequest() {
                 console.log('----提交信息----')
+                console.log('size:\t'+this.files.size)
                 // check
                 if(null === this.caReq){
                     this.$Modal.warning({
@@ -104,7 +109,8 @@
                         closable: true
                     })
                     return
-                }else if(null === this.files ){
+                }
+                if(undefined === this.files || undefined === this.files.size ){
                     this.$Modal.warning({
                         title: '提示框',
                         content: '申请文件为空',
@@ -117,19 +123,50 @@
                     var file = this.files
                     let fileType = this.fileType
                     let req = JSON.stringify(this.caReq)
-                    console.log(file)
-                    console.log(req)
-                    console.log(fileType)
+                    console.log("上传文件：\t"+ file)
+                    console.log("申请参数：\t"+ req)
+                    console.log("文件类型：\t"+ fileType)
                     fd.append("file", file);
                     fd.append("params", req);
+                    fd.append("fileType", fileType)
 
                     this.http.uploadFileFormData(this.ports.ca.apy, fd, res => {
                         console.log(res)
-
+                        this.uploadReset()
                         if (res.errorCode === 0) {
-                            this.uploadReset()
 
-                            let fileName = '单证书.cer'
+                            this.$root.bus.$emit('chgStep', 2)
+                            // router push
+                            this.$router.push({
+                                name: 'caApyUnitResult',
+                                query: {
+                                    apyResult: {
+                                        code: res.errorCode,
+                                        message: res.message,
+                                        data: res.data,
+                                    }
+
+                                }
+                            })
+
+                        } else {
+                            this.$Modal.warning({
+                                title: '提示',
+                                content: res.message,
+                                closable: true
+                            })
+                        }
+                    })
+
+
+
+                }
+
+            },
+
+
+            /* // 将数据转文件下载
+             let fileName = '单证书.cer'
                             const blobData = res.data
                             if ('msSaveOrOpenBlob' in navigator) {
                                 // Microsoft Edge and Microsoft Internet Explorer 10-11
@@ -144,20 +181,9 @@
                                 elink.click()
                                 document.body.removeChild(elink)
                             }
-                        } else {
-                            this.$Modal.warning({
-                                title: '提示框',
-                                content: res.message,
-                                closable: true
-                            })
-                        }
-                    })
+             */
 
 
-
-                }
-
-            },
             getNowFormatDate() {
                 var date = new Date()
                 var seperator1 = '-'
@@ -172,7 +198,12 @@
                 var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
                 return currentdate
             },
-            uploadReset () {
+            uploadReset(){ // 清除上传文件的缓存
+                this.files = {}
+                document.getElementById("pkFile").value = "";
+            },
+
+            uploadReset1 () {
                 let isIE10 = false
                 if (window.navigator.userAgent.indexOf('MSIE') >= 1) { // 判断ie10以及以下
                     isIE10 = true
@@ -180,6 +211,7 @@
                     isIE10 = false
                 }
                 let uploadInput = document.getElementsByClassName('upfile')
+
                 if (isIE10) {
                     let form = document.createElement('form')
                     let beforInput = uploadInput.nextSibling
@@ -212,17 +244,29 @@
                 }
                 var size = fileSize / 1024
                 if (size > 10240) {
-                    alert('上传文件最大为10M，请重新上传。')
+                    this.$Modal.warning({
+                        title: '提示',
+                        content: '上传文件最大为10M，请重新上传。',
+                        closable: true
+                    })
                     this.uploadReset()
                     return
                 }
                 var name = target.value
                 var fileType = name.substring(name.lastIndexOf('.') + 1).toLowerCase()
                 console.log("选择的文件名后缀："+fileType)
-                if(fileType === '.dat'){
+                if(fileType === 'dat'){
                     this.fileType = 0
-                }else{
+                }else if(fileType === 'p10' || fileType === 'csr'){
                     this.fileType = 1
+                }else{
+                    this.$Modal.warning({
+                        title: '提示',
+                        content: '上传的文件即不是公钥文件也不是p10文件，请重新上传',
+                        closable: true
+                    })
+                    this.uploadReset()
+                    return
                 }
 
                 this.files = target.files[0]

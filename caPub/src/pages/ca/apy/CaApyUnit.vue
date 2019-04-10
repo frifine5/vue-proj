@@ -5,6 +5,18 @@
         <table class="set-table1" cellpadding="0" cellspacing="0 ">
             <tr>
                 <td width="15%">
+
+                </td>
+                <td width="30%">
+                    证书名称<br/><small><small><small>（如不填，将以统一社会信用代码+单位名称组合作为证书名称）</small></small></small>
+                </td>
+                <td colspan="2">
+                    <MyInput :inputValue="caReq.certName" placeholder="请输入证书名称"
+                             @change=" (e,value) => {caReq.certName=value}"></MyInput>
+                </td>
+            </tr>
+            <tr>
+                <td width="15%">
                     *单位/机构名称
                 </td>
                 <td width="30%">
@@ -89,6 +101,7 @@
                 caReq: {
                     entName: '',        // 企业/机构名称
                     uniSocCode: '',        // 统一社会信用代码
+                    certName: '',       // 证书名称
                     province: '',       // 省
                     city: '',           // 市
                     county: '',         // 县
@@ -96,8 +109,6 @@
                     telephone: '',      // 联系电话
                     validEnd: '',       // 有效期止
                     validAge: '',       // 有效期（年）
-                    pkFile: '',         // 公钥文件
-                    p10File: '',        // 公钥p10文件
                 },
                 sliderVerification: '',
                 dateEditable: false,
@@ -121,27 +132,60 @@
             },
             // 跳转到步骤 ‘检查和预览’
             j2pv() {
-                // add logic
+                let flag = this.paramCheck()
+                if(!flag){// add logic check
+                    return
+                }else{
+                    // chg step
+                    this.$root.bus.$emit('chgStep', 1)
+                    console.log(this.caReq)
 
+                    // router push
+                    this.$router.push({
+                        name: 'caApyView',
+                        query: {
+                            caReq: this.caReq,
+                        }
+                    })
+                }
 
-
-                // chg step
-                this.$root.bus.$emit('chgStep', 1)
-                console.log(this.caReq)
-
-                // router push
-                this.$router.push({
-                    name: 'caApyView',
-                    query: {
-                        caReq: this.caReq,
-                    }
+            },
+            paramCheck(){
+                let params = this.caReq
+                if(null === params.entName || "" === params.entName){
+                    return this.checkMsg('单位名称不能为空')
+                }
+                if(null === params.uniSocCode || "" === params.uniSocCode){
+                    return this.checkMsg('统一社会信用代码不能为空')
+                }else if(params.uniSocCode.length !== 18){
+                    return this.checkMsg('统一社会信用代码格式错误')
+                }
+                if(null === params.address || "" === params.address){
+                    return this.checkMsg('详细地址不能为空')
+                }
+                if("" === params.validEnd && ""===params.validAge){
+                    return this.checkMsg('有效期不能为空')
+                }
+                if("" === params.province|| "" === params.city || "" === params.county){
+                    return this.checkMsg('省市区县不能为空')
+                }else if(params.province.length >6 ||params.city.length >6 ||params.county.length >6 ){
+                    return this.checkMsg('省市区县代码错误')
+                }
+                return true
+            },
+            checkMsg(msg){
+                this.$Modal.warning({
+                    title: '提示框',
+                    content: msg,
+                    closable: true
                 })
-
+                return false
             },
             reset() {
                 this.caReq ={
                         entName: '',        // 企业/机构名称
                         uniSocCode: '',        // 统一社会信用代码
+                        certName: '',       // 证书名称
                         province: '',       // 省
                         city: '',           // 市
                         county: '',         // 县
@@ -149,8 +193,6 @@
                         telephone: '',      // 联系电话
                         validEnd: '',       // 有效期止
                         validAge: '',       // 有效期（年）
-                        pkFile: '',         // 公钥文件
-                        p10File: '',        // 公钥p10文件
                 }
             },
         },

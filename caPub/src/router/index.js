@@ -41,6 +41,7 @@ const makeQrcodePic = () => import('@/pages/qrcode/MakeQrcodePic')
 const caApply = () => import('@/pages/ca/apy/CaApply')
 const caApyUnit = () => import('@/pages/ca/apy/CaApyUnit')
 const caApyView = () => import('@/pages/ca/apy/CaApyView')
+const caApyUnitResult = () => import('@/pages/ca/apy/CaApyResult')
 // const apyCaPreSub = () => import('@/pages/ca/apy/ApyPreSub')
 
 
@@ -72,6 +73,11 @@ export default new Router({
                             path: '/ca/apy/caApyView',
                             name: 'caApyView',
                             component: caApyView
+                        },
+                        {
+                            path: '/ca/apy/caApyUnitResult',
+                            name: 'caApyUnitResult',
+                            component: caApyUnitResult
                         },
 
 
