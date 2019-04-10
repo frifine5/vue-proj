@@ -31,15 +31,15 @@
                         url: '/caReq',
                         children: [
                             {name: '证书申请', url: '/ca/apy/caApyUnit'},
-                            {name: '证书制作', url: '/ca/list'},
+                            {name: '查询下载', url: '/ca/apy/query'},
                         ]
                     },
                     {
                         name: '证书查询服务',
                         url: '/caQue',
                         children: [
-                            {name: '证书查询/下载', url: '/ca/que'},
-                            {name: '吊销列表下载', url: '/crl/list'},
+                            {name: '证书状态查询', url: '/ca/status/query'},
+                            {name: '吊销列表下载', url: '/ca/crl/list'},
                         ]
                     },
                     {

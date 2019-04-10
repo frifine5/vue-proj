@@ -80,7 +80,6 @@ export default new Router({
                             component: caApyUnitResult
                         },
 
-
                     ]
                 },
 
