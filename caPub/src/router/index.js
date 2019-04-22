@@ -43,6 +43,7 @@ const caApyUnit = () => import('@/pages/ca/apy/CaApyUnit')
 const caApyView = () => import('@/pages/ca/apy/CaApyView')
 const caApyUnitResult = () => import('@/pages/ca/apy/CaApyResult')
 // const apyCaPreSub = () => import('@/pages/ca/apy/ApyPreSub')
+const cerApyQuery = () => import('@/pages/ca/qad/CerApyQuery')
 
 
 Vue.use(Router)
@@ -64,6 +65,7 @@ export default new Router({
                     name: 'caReq',
                     component: caApply,
                     children: [
+                        // 证书申请
                         {
                             path: '/ca/apy/caApyUnit',
                             name: 'caApyUnit',
@@ -81,6 +83,12 @@ export default new Router({
                         },
 
                     ]
+                },
+                // 查询下载
+                {
+                    path: '/ca/apy/query',
+                    name: 'cerApyQuery',
+                    component: cerApyQuery
                 },
 
 
